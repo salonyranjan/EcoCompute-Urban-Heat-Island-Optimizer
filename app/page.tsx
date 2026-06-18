@@ -4,19 +4,19 @@ import React, { useState, useEffect } from "react";
 import HeatMap3D from "@/components/HeatMap3D";
 import ThermalProfileChart from "@/components/ThermalProfileChart";
 import dynamic from "next/dynamic";
-import { Sliders, Sparkles, Trees, Info, Activity, Thermometer, Droplets, Wind, Network, CheckCircle2, XCircle, Clock } from "lucide-react";
+import { Sliders, Sparkles, Trees, Info, Activity, Thermometer, Droplets, Wind, Network } from "lucide-react";
 import "leaflet/dist/leaflet.css";
 
 const MapPicker = dynamic(() => import("@/components/MapPicker"), { ssr: false });
 
 function formatMarkdownText(text: string) {
   const lines = text.split('\n');
-  const elements: JSX.Element[] = [];
-  let listItems: JSX.Element[] = [];
+  const elements: React.JSX.Element[] = [];
+  let listItems: React.JSX.Element[] = [];
 
   const parseBold = (content: string) => {
     const boldRegex = /\*\*(.*?)\*\*/g;
-    const parts: (string | JSX.Element)[] = [];
+    const parts: (string | React.JSX.Element)[] = [];
     let last = 0;
     let match: RegExpExecArray | null;
     while ((match = boldRegex.exec(content)) !== null) {
@@ -68,7 +68,6 @@ function formatMarkdownText(text: string) {
 
   return elements;
 }
-
 
 // ─── Network Response Inspector Component ────────────────────────────────────
 
@@ -199,43 +198,35 @@ function FieldRow({ field, depth = 0 }: { field: ResponseField; depth?: number }
   return (
     <div className="w-full">
       <div
-        className="flex items-start gap-2 px-2 py-[5px] rounded-lg hover:bg-slate-800/60 transition-colors group cursor-default"
+        className="flex items-start gap-2 px-2 py-[5px] rounded-none hover:bg-slate-800/60 transition-colors group cursor-default"
         style={{ paddingLeft: `${8 + indent}px` }}
         onClick={() => hasChildren && setOpen((p) => !p)}
       >
-        {/* Expand arrow */}
         <span className={`shrink-0 mt-0.5 w-3 text-[9px] text-slate-600 ${hasChildren ? "cursor-pointer" : ""}`}>
           {hasChildren ? (open ? "▾" : "▸") : ""}
         </span>
 
-        {/* Type badge */}
         <span className={`shrink-0 mt-[1px] text-[8px] font-black uppercase tracking-wider px-1.5 py-[2px] rounded-sm border font-mono ${TYPE_PILL[field.type]}`}>
           {field.type === "array" ? `arr[${(field.rawValue as unknown[]).length}]` : field.type}
         </span>
 
-        {/* Key */}
         <span className="shrink-0 text-[11px] font-mono font-semibold text-slate-200 min-w-[72px] max-w-[100px] truncate">
           {field.key}
         </span>
 
-        {/* Separator */}
         <span className="shrink-0 text-slate-600 text-[11px] font-mono">:</span>
 
-        {/* Value preview */}
         <span className={`text-[11px] font-mono truncate min-w-0 flex-1 ${TYPE_VALUE[field.type]}`}>
           {field.preview}
         </span>
 
-        {/* Byte size */}
         <span className="shrink-0 text-[9px] text-slate-700 font-mono ml-1 mt-0.5">
           {field.byteSize > 1024 ? `${(field.byteSize / 1024).toFixed(1)}kb` : `${field.byteSize}b`}
         </span>
 
-        {/* Copy */}
         <CopyButton text={field.fullValue} />
       </div>
 
-      {/* Children (expanded) */}
       {hasChildren && open && (
         <div className="border-l border-slate-800/60 ml-[19px]">
           {field.children!.map((child) => (
@@ -279,8 +270,6 @@ function StreamLines() {
     </div>
   );
 }
-
-// ── Main component ─────────────────────────────────────────────────────────────
 
 function NetworkInspector({
   raw,
@@ -328,21 +317,18 @@ function NetworkInspector({
   });
 
   return (
-    <div className={`mt-4 rounded-none border ${borderColor} bg-[#0a0f1a] overflow-hidden shadow-2xl`}>
+    <div className={`mt-4 rounded-none border ${borderColor} bg-[#0a0f1a] overflow-hidden`}>
 
-      {/* ── Title bar ── */}
       <div
         className="flex items-center gap-0 border-b border-slate-800/60 bg-slate-900/70 cursor-pointer hover:bg-slate-800/50 transition-colors"
         onClick={onToggle}
       >
-        {/* Traffic lights */}
         <div className="flex items-center gap-1.5 px-3 py-2.5 border-r border-slate-800/60">
           <span className="w-2.5 h-2.5 rounded-full bg-red-500/70" />
           <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/70" />
           <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/70" />
         </div>
 
-        {/* URL bar */}
         <div
           className="flex-1 flex items-center gap-2 px-3"
           onClick={(e) => e.stopPropagation()}
@@ -355,7 +341,6 @@ function NetworkInspector({
           </span>
         </div>
 
-        {/* Status + meta */}
         <div className="flex items-center gap-3 px-3 py-2.5">
           {isLoading && (
             <span className="flex items-center gap-1.5 text-[10px] text-amber-400 font-mono">
@@ -381,7 +366,6 @@ function NetworkInspector({
               </span>
             </>
           )}
-          {/* Collapse toggle */}
           <button
             onClick={(e) => e.stopPropagation()}
             className="text-slate-600 hover:text-slate-400 transition-colors ml-1"
@@ -397,7 +381,6 @@ function NetworkInspector({
 
       {isOpen && (
         <>
-          {/* ── Tab bar ── */}
           {raw && !isLoading && (
             <div className="flex border-b border-slate-800/60 bg-slate-900/40">
               {(["parsed", "raw"] as const).map((t) => (
@@ -406,7 +389,7 @@ function NetworkInspector({
                   onClick={() => setTab(t)}
                   className={`px-4 py-2 text-[10px] font-mono font-bold uppercase tracking-widest transition-all border-b-2 ${
                     tab === t
-                      ? "border-emerald-500 text-emerald-400 bg-emerald-500/5"
+                      ? "border-slate-100 text-slate-100 bg-slate-800/50"
                       : "border-transparent text-slate-600 hover:text-slate-400"
                   }`}
                 >
@@ -420,10 +403,7 @@ function NetworkInspector({
             </div>
           )}
 
-          {/* ── Body ── */}
-          <div className="max-h-[260px] custom-scrollbar">
-
-            {/* Empty state */}
+          <div className="max-h-[260px] custom-scrollbar overflow-y-auto">
             {parsed.status === "empty" && !isLoading && (
               <div className="flex flex-col items-center justify-center py-8 gap-3">
                 <div className="w-10 h-10 rounded-none bg-slate-900 border border-slate-800 flex items-center justify-center">
@@ -438,7 +418,6 @@ function NetworkInspector({
               </div>
             )}
 
-            {/* Loading */}
             {isLoading && (
               <div className="p-3 space-y-2">
                 <div className="flex items-center gap-2 px-2 py-1.5 mb-1">
@@ -463,7 +442,6 @@ function NetworkInspector({
               </div>
             )}
 
-            {/* Parsed tab */}
             {!isLoading && tab === "parsed" && parsed.fields.length > 0 && (
               <div className="py-1.5 px-1">
                 {parsed.fields.map((field) => (
@@ -472,7 +450,6 @@ function NetworkInspector({
               </div>
             )}
 
-            {/* Raw tab */}
             {!isLoading && tab === "raw" && raw && (
               <div className="relative group/raw">
                 <pre className="p-4 text-[10.5px] font-mono text-slate-400 leading-relaxed whitespace-pre-wrap break-all">
@@ -642,15 +619,18 @@ export default function Home() {
 
   return (
     <div className="relative flex h-screen w-screen overflow-hidden bg-[#090E17] text-gray-100 font-sans">
+      {/* CRT Ambient Overlay */}
+      <div className="pointer-events-none fixed inset-0 z-50 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:100%_4px] mix-blend-overlay"></div>
+
       {/* Animated Grid Background */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
       </div>
 
       {/* Sidebar */}
-      <aside className="w-[400px] bg-[#101726] backdrop-blur-md border-r border-slate-800 flex flex-col h-full z-10 transition-all duration-300">
+      <aside className="w-full lg:w-[400px] bg-[#101726] border-r border-slate-800 flex flex-col h-[50vh] lg:h-full shrink-0 z-10 transition-all duration-300">
         {/* Header */}
-        <div className="p-6 border-b border-slate-800/60 bg-slate-900/50 backdrop-blur-md flex-none">
+        <div className="p-6 border-b border-slate-800/60 bg-[#101726] flex-none">
           <div className="flex items-center gap-3">
             <div className="p-2.5 bg-[#090E17] border border-slate-700 rounded-none text-slate-100 flex items-center justify-center">
               <Trees className="w-6 h-6" />
@@ -662,203 +642,204 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Configuration Panel */}
+        {/* Scrollable Feed */}
         <div className="flex-1 overflow-y-auto custom-scrollbar pb-10">
+          {/* Configuration Panel */}
           <div className="p-6 border-b border-slate-800/60 space-y-6">
-          <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">
-            <Sliders className="w-4 h-4 text-emerald-400" />
-            <span>SYSTEM PARAMETERS</span>
-          </div>
-
-          {/* METEOROLOGICAL SENSORS */}
-          <div className="space-y-4">
             <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">
-              <Trees className="w-4 h-4 text-sky-400" />
-              <span>METEOROLOGICAL SENSORS</span>
+              <Sliders className="w-4 h-4 text-emerald-400" />
+              <span>SYSTEM PARAMETERS</span>
             </div>
 
-            {weather ? (
-              <div className="grid grid-cols-3 gap-3">
-                <div className="bg-gradient-to-br from-red-500/20 to-red-600/10 backdrop-blur-sm border border-red-500/30 rounded-none p-3 text-center transition-all duration-300 hover:scale-[1.02]">
-                  <div className="w-8 h-8 mx-auto mb-1.5 bg-red-500/20 rounded-lg flex items-center justify-center">
-                    <Thermometer className="w-4 h-4 text-red-400" />
-                  </div>
-                  <div className="text-[10px] font-bold tracking-wider text-slate-500 uppercase">Temp</div>
-                  <div className="text-lg font-bold text-red-300">{weather.temp}°C</div>
-                </div>
+            {/* METEOROLOGICAL SENSORS */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                <Trees className="w-4 h-4 text-sky-400" />
+                <span>METEOROLOGICAL SENSORS</span>
+              </div>
 
-                <div className="bg-gradient-to-br from-blue-500/20 to-blue-600/10 backdrop-blur-sm border border-blue-500/30 rounded-none p-3 text-center transition-all duration-300 hover:scale-[1.02]">
-                  <div className="w-8 h-8 mx-auto mb-1.5 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                    <Droplets className="w-4 h-4 text-blue-400" />
+              {weather ? (
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="bg-[#090E17] border border-slate-800/80 rounded-none p-3 text-center">
+                    <div className="w-8 h-8 mx-auto mb-1.5 flex items-center justify-center">
+                      <Thermometer className="w-4 h-4 text-red-400" />
+                    </div>
+                    <div className="text-[10px] font-bold tracking-wider text-slate-500 uppercase">Temp</div>
+                    <div className="text-lg font-mono text-slate-100">{weather.temp}°C</div>
                   </div>
-                  <div className="text-[10px] font-bold tracking-wider text-slate-500 uppercase">Humidity</div>
-                  <div className="text-lg font-bold text-blue-300">{weather.humidity}%</div>
-                </div>
 
-                <div className="bg-gradient-to-br from-cyan-500/20 to-teal-600/10 backdrop-blur-sm border border-cyan-500/30 rounded-none p-3 text-center transition-all duration-300 hover:scale-[1.02]">
-                  <div className="w-8 h-8 mx-auto mb-1.5 bg-cyan-500/20 rounded-lg flex items-center justify-center">
-                    <Wind className="w-4 h-4 text-cyan-400" />
+                  <div className="bg-[#090E17] border border-slate-800/80 rounded-none p-3 text-center">
+                    <div className="w-8 h-8 mx-auto mb-1.5 flex items-center justify-center">
+                      <Droplets className="w-4 h-4 text-blue-400" />
+                    </div>
+                    <div className="text-[10px] font-bold tracking-wider text-slate-500 uppercase">Humidity</div>
+                    <div className="text-lg font-mono text-slate-100">{weather.humidity}%</div>
                   </div>
-                  <div className="text-[10px] font-bold tracking-wider text-slate-500 uppercase">Wind</div>
-                  <div className="text-lg font-bold text-cyan-300">{weather.wind} km/h</div>
+
+                  <div className="bg-[#090E17] border border-slate-800/80 rounded-none p-3 text-center">
+                    <div className="w-8 h-8 mx-auto mb-1.5 flex items-center justify-center">
+                      <Wind className="w-4 h-4 text-cyan-400" />
+                    </div>
+                    <div className="text-[10px] font-bold tracking-wider text-slate-500 uppercase">Wind</div>
+                    <div className="text-lg font-mono text-slate-100">{weather.wind} km/h</div>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-xs text-slate-500">● Keyless Telemetry Stream Active</div>
+              )}
+            </div>
+
+            {/* Canopy Slider */}
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <div className="text-[10px] font-bold tracking-widest text-slate-500 uppercase">Canopy Coverage</div>
+                <span className="text-slate-100 font-mono">{canopyCoverage}%</span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={canopyCoverage}
+                onChange={(e) => setCanopyCoverage(Number(e.target.value))}
+                className="w-full h-2 bg-slate-800/50 rounded-full appearance-none cursor-crosshair transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-[#00F0FF] focus:ring-offset-1 focus:ring-offset-[#090E17]"
+                style={{
+                  background: `linear-gradient(to right, rgba(0,240,255,0.4), rgba(255,0,85,0.8) ${canopyCoverage}%, rgba(24,25,28,0.5) ${canopyCoverage}%, rgba(24,25,28,0.5))`,
+                }}
+              />
+            </div>
+
+            {/* Concrete Slider */}
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <div className="text-[10px] font-bold tracking-widest text-slate-500 uppercase">Concrete Ratio</div>
+                <span className="text-slate-100 font-mono">{concreteRatio}%</span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={concreteRatio}
+                onChange={(e) => setConcreteRatio(Number(e.target.value))}
+                className="w-full h-2 bg-slate-800/50 rounded-full appearance-none cursor-crosshair transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-[#00F0FF] focus:ring-offset-1 focus:ring-offset-[#090E17]"
+                style={{
+                  background: `linear-gradient(to right, rgba(255,107,107,0.3), rgba(252,165,165,0.6) ${concreteRatio}%, rgba(24,25,28,0.5) ${concreteRatio}%, rgba(24,25,28,0.5))`,
+                }}
+              />
+            </div>
+
+            {/* Run Button */}
+            <button
+              onClick={(e) => triggerOptimization(e)}
+              disabled={isLoading}
+              className="w-full mt-4 py-3.5 px-4 bg-slate-100 text-slate-900 hover:bg-white transition-colors font-mono font-bold text-[11px] uppercase tracking-widest border border-slate-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed rounded-none"
+            >
+              <Sparkles className="w-4 h-4" />
+              {isLoading ? "Analyzing Metrics..." : "SIMULATE THERMAL IMPACT"}
+            </button>
+          </div>
+
+          {/* Analytics Feed */}
+          <div className="p-6 space-y-6">
+            <NetworkInspector
+              raw={rawDebug}
+              isLoading={isLoading}
+              isOpen={isInspectorOpen}
+              onToggle={() => setIsInspectorOpen((p) => !p)}
+            />
+            
+            {isLoading && (
+              <div className="space-y-4 py-4">
+                <div className="flex items-center gap-2 text-slate-400 text-sm">
+                  <Activity className="w-4 h-4 text-emerald-400" />
+                  <span>Querying cloud vector matrix...</span>
+                </div>
+                <div className="space-y-3">
+                  <div className="h-28 bg-[#090E17] border border-slate-800 rounded-none animate-pulse"></div>
+                  <div
+                    className="h-20 bg-[#090E17] border border-slate-800 rounded-none animate-pulse"
+                    style={{ animationDelay: '0.2s' }}
+                  ></div>
                 </div>
               </div>
-            ) : (
-              <div className="text-xs text-slate-500">● Keyless Telemetry Stream Active</div>
+            )}
+
+            {analysis && !isLoading && (
+              <div className="space-y-3 fade-in">
+                <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                  <Info className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>INTERVENTION STRATEGY</span>
+                </div>
+                <div className="bg-[#090E17] border border-slate-800 rounded-none p-5 text-slate-300 leading-relaxed text-sm font-mono whitespace-pre-wrap">
+                  {formatMarkdownText(analysis)}
+                </div>
+                <ThermalProfileChart
+                  canopyCoverage={canopyCoverage}
+                  concreteRatio={concreteRatio}
+                  baseTemp={weather?.temp || 28}
+                />
+              </div>
+            )}
+
+            {matches.length > 0 && !isLoading && (
+              <div className="space-y-4 fade-in">
+                <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                  <Trees className="w-3.5 h-3.5 text-teal-400" />
+                  <span>Optimized Forestry Matches</span>
+                </div>
+                <div className="space-y-3">
+                  {matches.map((m) => {
+                    const name = m.metadata?.name || m.name || m.id.replace('tree-', '').toUpperCase();
+                    const drought = m.metadata?.droughtResistance || m.droughtResistance || 'Medium';
+                    const cooling = m.metadata?.coolingEfficiency || m.coolingEfficiency || '8';
+                    const category = m.metadata?.category || m.category || 'native';
+
+                    const accentColors: Record<string, string> = {
+                      native: 'border-l-emerald-400',
+                      fruit: 'border-l-orange-400',
+                      shade: 'border-l-blue-400',
+                      hedge: 'border-l-purple-400',
+                      default: 'border-l-teal-400',
+                    };
+                    const accentBorder = accentColors[category] ?? accentColors.default;
+
+                    return (
+                      <div
+                        key={m.id}
+                        className={`p-4 bg-[#090E17] border border-slate-800 ${accentBorder} rounded-none hover:bg-slate-800/50 transition-all duration-300`}
+                      >
+                        <div className="flex justify-between items-start mb-2">
+                          <h4 className="text-sm font-semibold text-white tracking-wide font-mono uppercase">{name}</h4>
+                          <span
+                            className={`px-2.5 py-1 rounded-none text-[10px] font-bold uppercase tracking-wider ${
+                              drought === 'High'
+                                ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                                : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                            }`}
+                          >
+                            {drought} Water Res
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-400 leading-relaxed mb-3 font-mono">{m.text}</p>
+                        <div className="pt-2 flex items-center justify-between text-[11px] text-slate-500 font-mono border-t border-slate-800 mt-2">
+                          <span>
+                            Cooling Index: <strong className="text-emerald-400">{cooling}/10</strong>
+                          </span>
+                          <span>
+                            ID: <code className="text-slate-400 bg-slate-900 px-1.5 py-0.5 border border-slate-800">{m.id}</code>
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             )}
           </div>
-
-          {/* Canopy Slider */}
-          <div className="space-y-3">
-            <div className="flex justify-between items-center">
-              <div className="text-[10px] font-bold tracking-widest text-slate-500 uppercase">Canopy Coverage</div>
-              <span className="text-slate-100 font-mono">{canopyCoverage}%</span>
-            </div>
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={canopyCoverage}
-              onChange={(e) => setCanopyCoverage(Number(e.target.value))}
-              className="w-full h-2 bg-slate-800/50 rounded-full appearance-none cursor-pointer transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-[#00F0FF] focus:ring-offset-1 focus:ring-offset-[#090E17] hover:cursor-crosshair transition-all"
-              style={{
-                background: `linear-gradient(to right, rgba(20,184,166,0.3), rgba(16,185,129,0.6) ${canopyCoverage}%, rgba(24,25,28,0.5) ${canopyCoverage}%, rgba(24,25,28,0.5))`,
-              }}
-            />
-          </div>
-
-          {/* Concrete Slider */}
-          <div className="space-y-3">
-            <div className="flex justify-between items-center">
-              <div className="text-[10px] font-bold tracking-widest text-slate-500 uppercase">Concrete Ratio</div>
-              <span className="text-orange-400 font-bold text-lg">{concreteRatio}%</span>
-            </div>
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={concreteRatio}
-              onChange={(e) => setConcreteRatio(Number(e.target.value))}
-              className="w-full h-2 bg-slate-800/50 rounded-full appearance-none cursor-pointer transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-[#00F0FF] focus:ring-offset-1 focus:ring-offset-[#090E17] hover:cursor-crosshair transition-all"
-              style={{
-                background: `linear-gradient(to right, rgba(255,107,107,0.3), rgba(252,165,165,0.6) ${concreteRatio}%, rgba(24,25,28,0.5) ${concreteRatio}%, rgba(24,25,28,0.5))`,
-              }}
-            />
-          </div>
-
-          {/* Run Button */}
-          <button
-            onClick={(e) => triggerOptimization(e)}
-            disabled={isLoading}
-            className="w-full mt-4 py-3.5 px-4 bg-slate-100 text-slate-900 hover:bg-white transition-colors font-mono font-bold text-[11px] uppercase tracking-widest border border-slate-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <Sparkles className="w-5 h-5" />
-            {isLoading ? "Analyzing Metrics..." : "SIMULATE THERMAL IMPACT"}
-          </button>
-          </div>
-
-        {/* Analytics Feed */}
-        <div className="p-6 space-y-6">
-              <NetworkInspector
-                raw={rawDebug}
-                isLoading={isLoading}
-                isOpen={isInspectorOpen}
-                onToggle={() => setIsInspectorOpen((p) => !p)}
-              />
-          {isLoading && (
-            <div className="space-y-4 py-4">
-              <div className="flex items-center gap-2 text-slate-400 text-sm">
-                <Activity className="w-4 h-4 text-emerald-400" />
-                <span>Querying cloud vector matrix...</span>
-              </div>
-              <div className="space-y-3">
-                <div className="h-28 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 rounded-none animate-pulse"></div>
-                <div
-                  className="h-20 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 rounded-none animate-pulse"
-                  style={{ animationDelay: '0.2s' }}
-                ></div>
-              </div>
-            </div>
-          )}
-
-          {analysis && !isLoading && (
-            <div className="space-y-3 fade-in">
-              <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                <Info className="w-3.5 h-3.5 text-emerald-400" />
-                <span>INTERVENTION STRATEGY</span>
-              </div>
-              <div className="bg-slate-900/40 backdrop-blur-md border border-slate-800/60 rounded-none p-5 text-slate-300 leading-relaxed text-sm font-mono whitespace-pre-wrap shadow-inner">
-                {formatMarkdownText(analysis)}
-              </div>
-              <ThermalProfileChart
-                canopyCoverage={canopyCoverage}
-                concreteRatio={concreteRatio}
-                baseTemp={weather?.temp || 28}
-              />
-            </div>
-          )}
-
-          {matches.length > 0 && !isLoading && (
-            <div className="space-y-4 fade-in">
-              <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                <Trees className="w-3.5 h-3.5 text-teal-400" />
-                <span>Optimized Forestry Matches</span>
-              </div>
-              <div className="space-y-3">
-                {matches.map((m) => {
-                  const name = m.metadata?.name || m.name || m.id.replace('tree-', '').toUpperCase();
-                  const drought = m.metadata?.droughtResistance || m.droughtResistance || 'Medium';
-                  const cooling = m.metadata?.coolingEfficiency || m.coolingEfficiency || '8';
-                  const category = m.metadata?.category || m.category || 'native';
-
-                  const accentColors: Record<string, string> = {
-                    native: 'border-l-emerald-400',
-                    fruit: 'border-l-orange-400',
-                    shade: 'border-l-blue-400',
-                    hedge: 'border-l-purple-400',
-                    default: 'border-l-teal-400',
-                  };
-                  const accentBorder = accentColors[category] ?? accentColors.default;
-
-                  return (
-                    <div
-                      key={m.id}
-                      className={`p-4 bg-slate-900/40 backdrop-blur-md border ${accentBorder} rounded-none hover:bg-slate-800/50 transition-all duration-300 shadow-lg shadow-black/20`}
-                    >
-                      <div className="flex justify-between items-start mb-2">
-                        <h4 className="text-sm font-semibold text-white tracking-wide">{name}</h4>
-                        <span
-                          className={`px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${
-                            drought === 'High'
-                              ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                              : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                          }`}
-                        >
-                          {drought} Water Res
-                        </span>
-                      </div>
-                      <p className="text-xs text-slate-400 leading-relaxed mb-3">{m.text}</p>
-                      <div className="pt-2 flex items-center justify-between text-[11px] text-slate-500 font-medium border-t border-slate-700/50">
-                        <span>
-                          Cooling Index: <strong className="text-emerald-400 font-bold">{cooling}/10</strong>
-                        </span>
-                        <span>
-                          ID: <code className="text-slate-400 bg-slate-800/50 px-1.5 py-0.5 rounded">{m.id}</code>
-                        </span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-        </div>
         </div>
       </aside>
 
-      <div className="pointer-events-none fixed inset-0 z-50 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:100%_4px] mix-blend-overlay"></div>
       {/* Primary Visualization Area */}
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 h-[calc(100vh-2rem)]">
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 min-h-[50vh] lg:h-[calc(100vh-2rem)] p-4 lg:p-0" style={{ borderTop: '2px solid', borderImage: 'linear-gradient(to right, #00F0FF, #FF0055) 1' }}>
         <div className="bg-[#101726] border border-slate-800 rounded-none overflow-hidden">
           <MapPicker
             center={location ?? undefined}
