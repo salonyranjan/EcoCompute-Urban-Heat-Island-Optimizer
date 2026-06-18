@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
-import { MapContainer, TileLayer, Marker, Circle, Popup } from "react-leaflet";
+import { useState, useMemo } from "react";
+import { MapContainer, TileLayer, Marker, Circle, Popup, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -29,6 +29,26 @@ interface MapPickerProps {
   onZoneClick?: (canopy: number, concrete: number) => void;
   /** Current map center – used to recenter the map when geolocation resolves */
   center?: [number, number];
+}
+
+/**
+ * Modern React-Leaflet requires map events to be handled inside a child component
+ * using the useMapEvents hook, rather than an onClick prop on the MapContainer.
+ */
+function MapClickHandler({ 
+  onLocationSelect, 
+  setUserPosition 
+}: { 
+  onLocationSelect: (lat: number, lng: number) => void;
+  setUserPosition: (pos: [number, number]) => void;
+}) {
+  useMapEvents({
+    click(e) {
+      setUserPosition([e.latlng.lat, e.latlng.lng]);
+      onLocationSelect(e.latlng.lat, e.latlng.lng);
+    },
+  });
+  return null;
 }
 
 /**
@@ -82,23 +102,22 @@ export default function MapPicker({
       zoom={13}
       scrollWheelZoom={true}
       style={{ height: "100%", width: "100%" }}
-      whenCreated={(mapInstance) => {
+      whenReady={() => {
         // Ensure map is fully initialized before child components try to attach
         // No-op handler satisfies React-Leaflet mounting lifecycle
       }}
-      onClick={(e) => {
-        const { lat, lng } = e.latlng;
-        setUserPosition([lat, lng]);
-        onLocationSelect(lat, lng);
-      }}
     >
+      {/* Invisible component that handles the map click logic safely */}
+      <MapClickHandler 
+        onLocationSelect={onLocationSelect} 
+        setUserPosition={setUserPosition} 
+      />
+
       <TileLayer
         attribution="© OpenStreetMap contributors"
         url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
       />
 
-      {/* Re-center the map when the incoming `center` prop changes */}
-      
       {/* Render each environmental zone as a circle with a popup */}
       {zones.map(zone => (
         <Circle
