@@ -720,7 +720,7 @@ export default function Home() {
               max="100"
               value={canopyCoverage}
               onChange={(e) => setCanopyCoverage(Number(e.target.value))}
-              className="w-full h-2 bg-slate-800/50 rounded-full appearance-none cursor-pointer transition-all duration-300"
+              className="w-full h-2 bg-slate-800/50 rounded-full appearance-none cursor-pointer transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-[#00F0FF] focus:ring-offset-1 focus:ring-offset-[#090E17] hover:cursor-crosshair transition-all"
               style={{
                 background: `linear-gradient(to right, rgba(20,184,166,0.3), rgba(16,185,129,0.6) ${canopyCoverage}%, rgba(24,25,28,0.5) ${canopyCoverage}%, rgba(24,25,28,0.5))`,
               }}
@@ -739,7 +739,7 @@ export default function Home() {
               max="100"
               value={concreteRatio}
               onChange={(e) => setConcreteRatio(Number(e.target.value))}
-              className="w-full h-2 bg-slate-800/50 rounded-full appearance-none cursor-pointer transition-all duration-300"
+              className="w-full h-2 bg-slate-800/50 rounded-full appearance-none cursor-pointer transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-[#00F0FF] focus:ring-offset-1 focus:ring-offset-[#090E17] hover:cursor-crosshair transition-all"
               style={{
                 background: `linear-gradient(to right, rgba(255,107,107,0.3), rgba(252,165,165,0.6) ${concreteRatio}%, rgba(24,25,28,0.5) ${concreteRatio}%, rgba(24,25,28,0.5))`,
               }}
@@ -856,6 +856,7 @@ export default function Home() {
         </div>
       </aside>
 
+      <div className="pointer-events-none fixed inset-0 z-50 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:100%_4px] mix-blend-overlay"></div>
       {/* Primary Visualization Area */}
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 h-[calc(100vh-2rem)]">
         <div className="bg-[#101726] border border-slate-800 rounded-none overflow-hidden">
