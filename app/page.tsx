@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import HeatMap3D from "@/components/HeatMap3D";
+import ThermalProfileChart from "@/components/ThermalProfileChart";
 import dynamic from "next/dynamic";
 import { Sliders, Sparkles, Trees, Info, Activity, Thermometer, Droplets, Wind, Network, CheckCircle2, XCircle, Clock } from "lucide-react";
 import "leaflet/dist/leaflet.css";
@@ -221,7 +222,7 @@ function FieldRow({ field, depth = 0 }: { field: ResponseField; depth?: number }
         <span className="shrink-0 text-slate-600 text-[11px] font-mono">:</span>
 
         {/* Value preview */}
-        <span className={`text-[11px] font-mono break-all leading-[1.5] min-w-0 flex-1 ${TYPE_VALUE[field.type]}`}>
+        <span className={`text-[11px] font-mono truncate min-w-0 flex-1 ${TYPE_VALUE[field.type]}`}>
           {field.preview}
         </span>
 
@@ -327,7 +328,7 @@ function NetworkInspector({
   });
 
   return (
-    <div className={`mt-4 rounded-xl border ${borderColor} bg-[#0a0f1a] overflow-hidden shadow-2xl`}>
+    <div className={`mt-4 rounded-none border ${borderColor} bg-[#0a0f1a] overflow-hidden shadow-2xl`}>
 
       {/* ── Title bar ── */}
       <div
@@ -420,12 +421,12 @@ function NetworkInspector({
           )}
 
           {/* ── Body ── */}
-          <div className="max-h-[260px] overflow-y-auto custom-scrollbar">
+          <div className="max-h-[260px] custom-scrollbar">
 
             {/* Empty state */}
             {parsed.status === "empty" && !isLoading && (
               <div className="flex flex-col items-center justify-center py-8 gap-3">
-                <div className="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-none bg-slate-900 border border-slate-800 flex items-center justify-center">
                   <Network className="w-5 h-5 text-slate-700" />
                 </div>
                 <div className="text-center">
@@ -475,7 +476,13 @@ function NetworkInspector({
             {!isLoading && tab === "raw" && raw && (
               <div className="relative group/raw">
                 <pre className="p-4 text-[10.5px] font-mono text-slate-400 leading-relaxed whitespace-pre-wrap break-all">
-                  {raw}
+                  {(() => {
+                    try {
+                      return JSON.stringify(JSON.parse(raw), null, 2);
+                    } catch {
+                      return raw;
+                    }
+                  })()}
                 </pre>
                 <button
                   onClick={() => navigator.clipboard.writeText(raw)}
@@ -634,44 +641,45 @@ export default function Home() {
   };
 
   return (
-    <div className="relative flex h-screen w-screen overflow-hidden bg-[#030712] text-gray-100 font-sans">
+    <div className="relative flex h-screen w-screen overflow-hidden bg-[#090E17] text-gray-100 font-sans">
       {/* Animated Grid Background */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
       </div>
 
       {/* Sidebar */}
-      <aside className="w-[400px] bg-slate-900/40 backdrop-blur-md border-r border-slate-800/60 flex flex-col h-full shadow-2xl z-10 transition-all duration-300 hover:border-slate-700/60">
+      <aside className="w-[400px] bg-[#101726] backdrop-blur-md border-r border-slate-800 flex flex-col h-full z-10 transition-all duration-300">
         {/* Header */}
         <div className="p-6 border-b border-slate-800/60 bg-slate-900/50 backdrop-blur-md flex-none">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-emerald-500/10 rounded-xl text-emerald-400 shadow-lg shadow-emerald-500/20">
+            <div className="p-2.5 bg-[#090E17] border border-slate-700 rounded-none text-slate-100 flex items-center justify-center">
               <Trees className="w-6 h-6" />
             </div>
             <div>
-              <h1 className="text-xl font-bold tracking-tight text-white">EcoCompute</h1>
+              <h1 className="font-mono uppercase tracking-widest text-lg">EcoCompute</h1>
               <p className="text-xs text-slate-400 font-medium">Urban Heat Island Optimizer</p>
             </div>
           </div>
         </div>
 
         {/* Configuration Panel */}
-        <div className="p-6 border-b border-slate-800/60 space-y-6 flex-none max-h-[450px] overflow-y-auto custom-scrollbar">
+        <div className="flex-1 overflow-y-auto custom-scrollbar pb-10">
+          <div className="p-6 border-b border-slate-800/60 space-y-6">
           <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">
             <Sliders className="w-4 h-4 text-emerald-400" />
-            <span>Simulation Parameters</span>
+            <span>SYSTEM PARAMETERS</span>
           </div>
 
-          {/* Live Climate Telemetry */}
+          {/* METEOROLOGICAL SENSORS */}
           <div className="space-y-4">
             <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">
               <Trees className="w-4 h-4 text-sky-400" />
-              <span>Live Climate Telemetry</span>
+              <span>METEOROLOGICAL SENSORS</span>
             </div>
 
             {weather ? (
               <div className="grid grid-cols-3 gap-3">
-                <div className="bg-gradient-to-br from-red-500/20 to-red-600/10 backdrop-blur-sm border border-red-500/30 rounded-xl p-3 text-center transition-all duration-300 hover:scale-[1.02]">
+                <div className="bg-gradient-to-br from-red-500/20 to-red-600/10 backdrop-blur-sm border border-red-500/30 rounded-none p-3 text-center transition-all duration-300 hover:scale-[1.02]">
                   <div className="w-8 h-8 mx-auto mb-1.5 bg-red-500/20 rounded-lg flex items-center justify-center">
                     <Thermometer className="w-4 h-4 text-red-400" />
                   </div>
@@ -679,7 +687,7 @@ export default function Home() {
                   <div className="text-lg font-bold text-red-300">{weather.temp}°C</div>
                 </div>
 
-                <div className="bg-gradient-to-br from-blue-500/20 to-blue-600/10 backdrop-blur-sm border border-blue-500/30 rounded-xl p-3 text-center transition-all duration-300 hover:scale-[1.02]">
+                <div className="bg-gradient-to-br from-blue-500/20 to-blue-600/10 backdrop-blur-sm border border-blue-500/30 rounded-none p-3 text-center transition-all duration-300 hover:scale-[1.02]">
                   <div className="w-8 h-8 mx-auto mb-1.5 bg-blue-500/20 rounded-lg flex items-center justify-center">
                     <Droplets className="w-4 h-4 text-blue-400" />
                   </div>
@@ -687,7 +695,7 @@ export default function Home() {
                   <div className="text-lg font-bold text-blue-300">{weather.humidity}%</div>
                 </div>
 
-                <div className="bg-gradient-to-br from-cyan-500/20 to-teal-600/10 backdrop-blur-sm border border-cyan-500/30 rounded-xl p-3 text-center transition-all duration-300 hover:scale-[1.02]">
+                <div className="bg-gradient-to-br from-cyan-500/20 to-teal-600/10 backdrop-blur-sm border border-cyan-500/30 rounded-none p-3 text-center transition-all duration-300 hover:scale-[1.02]">
                   <div className="w-8 h-8 mx-auto mb-1.5 bg-cyan-500/20 rounded-lg flex items-center justify-center">
                     <Wind className="w-4 h-4 text-cyan-400" />
                   </div>
@@ -704,7 +712,7 @@ export default function Home() {
           <div className="space-y-3">
             <div className="flex justify-between items-center">
               <div className="text-[10px] font-bold tracking-widest text-slate-500 uppercase">Canopy Coverage</div>
-              <span className="text-emerald-400 font-bold text-lg">{canopyCoverage}%</span>
+              <span className="text-slate-100 font-mono">{canopyCoverage}%</span>
             </div>
             <input
               type="range"
@@ -742,23 +750,21 @@ export default function Home() {
           <button
             onClick={(e) => triggerOptimization(e)}
             disabled={isLoading}
-            className="w-full mt-4 py-3.5 px-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all font-semibold rounded-xl flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full mt-4 py-3.5 px-4 bg-slate-100 text-slate-900 hover:bg-white transition-colors font-mono font-bold text-[11px] uppercase tracking-widest border border-slate-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Sparkles className="w-5 h-5" />
-            {isLoading ? "Analyzing Metrics..." : "Run AI Optimization"}
+            {isLoading ? "Analyzing Metrics..." : "SIMULATE THERMAL IMPACT"}
           </button>
-
-          {/* Network Response Inspector */}
-          <NetworkInspector
-              raw={rawDebug}
-              isLoading={isLoading}
-              isOpen={isInspectorOpen}
-              onToggle={() => setIsInspectorOpen((p) => !p)}
-            />
-        </div>
+          </div>
 
         {/* Analytics Feed */}
-        <div className="flex-1 min-h-0 overflow-y-auto p-6 space-y-6 custom-scrollbar">
+        <div className="p-6 space-y-6">
+              <NetworkInspector
+                raw={rawDebug}
+                isLoading={isLoading}
+                isOpen={isInspectorOpen}
+                onToggle={() => setIsInspectorOpen((p) => !p)}
+              />
           {isLoading && (
             <div className="space-y-4 py-4">
               <div className="flex items-center gap-2 text-slate-400 text-sm">
@@ -766,9 +772,9 @@ export default function Home() {
                 <span>Querying cloud vector matrix...</span>
               </div>
               <div className="space-y-3">
-                <div className="h-28 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 rounded-xl animate-pulse"></div>
+                <div className="h-28 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 rounded-none animate-pulse"></div>
                 <div
-                  className="h-20 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 rounded-xl animate-pulse"
+                  className="h-20 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 rounded-none animate-pulse"
                   style={{ animationDelay: '0.2s' }}
                 ></div>
               </div>
@@ -779,11 +785,16 @@ export default function Home() {
             <div className="space-y-3 fade-in">
               <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">
                 <Info className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Targeted Adaptation Plan</span>
+                <span>INTERVENTION STRATEGY</span>
               </div>
-              <div className="bg-slate-900/40 backdrop-blur-md border border-slate-800/60 rounded-xl p-5 text-slate-300 leading-relaxed text-sm font-mono whitespace-pre-wrap shadow-inner">
+              <div className="bg-slate-900/40 backdrop-blur-md border border-slate-800/60 rounded-none p-5 text-slate-300 leading-relaxed text-sm font-mono whitespace-pre-wrap shadow-inner">
                 {formatMarkdownText(analysis)}
               </div>
+              <ThermalProfileChart
+                canopyCoverage={canopyCoverage}
+                concreteRatio={concreteRatio}
+                baseTemp={weather?.temp || 28}
+              />
             </div>
           )}
 
@@ -812,7 +823,7 @@ export default function Home() {
                   return (
                     <div
                       key={m.id}
-                      className={`p-4 bg-slate-900/40 backdrop-blur-md border ${accentBorder} rounded-xl hover:bg-slate-800/50 transition-all duration-300 shadow-lg shadow-black/20`}
+                      className={`p-4 bg-slate-900/40 backdrop-blur-md border ${accentBorder} rounded-none hover:bg-slate-800/50 transition-all duration-300 shadow-lg shadow-black/20`}
                     >
                       <div className="flex justify-between items-start mb-2">
                         <h4 className="text-sm font-semibold text-white tracking-wide">{name}</h4>
@@ -842,11 +853,12 @@ export default function Home() {
             </div>
           )}
         </div>
+        </div>
       </aside>
 
       {/* Primary Visualization Area */}
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 h-[calc(100vh-2rem)]">
-        <div className="bg-slate-900/40 backdrop-blur-md border border-slate-800/60 rounded-2xl shadow-2xl transition-all duration-300 hover:border-slate-700/60 overflow-hidden">
+        <div className="bg-[#101726] border border-slate-800 rounded-none overflow-hidden">
           <MapPicker
             center={location ?? undefined}
             onLocationSelect={(lat: number, lng: number) => setLocation([lat, lng])}
@@ -856,7 +868,7 @@ export default function Home() {
             }}
           />
         </div>
-        <div className="bg-slate-900/40 backdrop-blur-md border border-slate-800/60 rounded-2xl shadow-2xl transition-all duration-300 hover:border-slate-700/60 overflow-hidden">
+        <div className="bg-[#101726] border border-slate-800 rounded-none overflow-hidden">
           <HeatMap3D canopyCoverage={canopyCoverage} concreteRatio={concreteRatio} weather={weather} />
         </div>
       </div>
