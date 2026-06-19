@@ -249,6 +249,34 @@ flowchart LR
         GROQ -->|Response| DASH[UI Update]
     end
 ```
+
+### 5.3 ⚡ Edge Execution Sequence
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant U  as 👤 User
+    participant FE as 🌐 Next.js Edge (Vercel)
+    participant API as ⚡ /api/optimize
+    participant OM as 🌤️ Open-Meteo
+    participant AI as 🧠 Groq API
+
+    Note over U,FE: 📍 Map Interaction
+    U->>FE: Clicks zone on React-Leaflet map
+    FE->>OM: GET weather for Lat/Lng
+    OM-->>FE: Return Temp/Humidity/Wind
+    FE-->>U: Update 3D Thermal Canvas
+
+    Note over U,AI: 🧠 AI Optimization Request
+    U->>FE: Clicks "Simulate Thermal Impact"
+    FE->>API: POST {canopy, concrete, weather}
+    API->>AI: Send system prompt + telemetry
+    AI-->>API: Return optimized forestry JSON (<800ms)
+    
+    Note over API,U: 📡 UI Update & Diagnostics
+    API-->>FE: Parsed AI recommendations
+    FE-->>U: Render recommendations & expand Network Inspector
+```
 ---
 ## 6. 🛠️ Tech Stack
 
