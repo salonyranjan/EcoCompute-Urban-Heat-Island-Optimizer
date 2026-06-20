@@ -128,7 +128,7 @@ EcoCompute is a cinematic, data-dense experience—built to communicate complex 
 ### 🌌 3D Thermal Canvas — *Microclimate Simulation*
 
 <div align="center">
-  <img src="./assets/3d-demo.png" width="100%" alt="EcoCompute — 3D Canvas"/>
+  <img src="./assets/3d-demo.png" width="400" alt="EcoCompute — 3D Canvas"/>
   <p><i>Real-time WebGL rendering of thermal heatmaps based on canopy-to-concrete ratios.</i></p>
 </div>
 
@@ -139,7 +139,9 @@ EcoCompute is a cinematic, data-dense experience—built to communicate complex 
 ### 🧠 AI Intervention Engine — *Groq-Powered Diagnostics*
 
 <div align="center">
-  <img src="./assets/ai-demo.png" width="100%" alt="EcoCompute — AI Strategy"/>
+  <img src="./assets/ai-demo1.png" width="400" alt="EcoCompute — AI Strategy"/>
+  <img src="./assets/ai-demo2.png" width="400" alt="EcoCompute — AI Strategy"/>
+  <img src="./assets/ai-demo4.png" width="400" alt="EcoCompute — AI Strategy"/>
   <p><i>Instantaneously generated urban forestry matrices based on current telemetry.</i></p>
 </div>
 
