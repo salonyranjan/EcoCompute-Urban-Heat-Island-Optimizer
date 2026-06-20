@@ -117,7 +117,7 @@ EcoCompute is a cinematic, data-dense experience—built to communicate complex 
 ### 🗺️ Geospatial Telemetry — *Interactive MapPicker*
 
 <div align="center">
-  <img src="./assets/map-demo.png" width="100%" alt="EcoCompute — Map Picker"/>
+  <img src="./assets/map-demo.png" width="400" alt="EcoCompute — Map Picker"/>
   <p><i>Live coordinate selection with canopy/concrete zone synchronisation via React-Leaflet.</i></p>
 </div>
 
