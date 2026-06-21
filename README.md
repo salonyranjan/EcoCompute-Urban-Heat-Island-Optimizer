@@ -139,9 +139,7 @@ EcoCompute is a cinematic, data-dense experience—built to communicate complex 
 ### 🧠 AI Intervention Engine — *Groq-Powered Diagnostics*
 
 <div align="center">
-  <img src="./assets/ai-demo1.png" width="400" alt="EcoCompute — AI Strategy"/>
-  <img src="./assets/ai-demo2.png" width="400" alt="EcoCompute — AI Strategy"/>
-  <img src="./assets/ai-demo4.png" width="400" alt="EcoCompute — AI Strategy"/>
+  <img src="./assets/ai-demo.png" width="400" alt="EcoCompute — AI Strategy"/>
   <p><i>Instantaneously generated urban forestry matrices based on current telemetry.</i></p>
 </div>
 
