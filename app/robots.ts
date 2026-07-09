@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: '*',
       allow: '/',
     },
-    sitemap: '[https://your-production-url.vercel.app/sitemap.xml](https://your-production-url.vercel.app/sitemap.xml)', // TODO: Update with real URL
+    sitemap: 'https://eco-compute-olive.vercel.app/sitemap.xml',
   };
 }
