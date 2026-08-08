@@ -23,6 +23,8 @@
 # misc
 .DS_Store
 *.pem
+Thumbs.db
+*.log
 
 # debug
 npm-debug.log*
@@ -39,3 +41,18 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+desktop.ini
+
+# lockfiles (optional — uncomment if you don't want to show these)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
